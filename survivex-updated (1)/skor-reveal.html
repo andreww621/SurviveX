@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skor Reveal — SurviveX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F17; --surface:#1B1F2E; --surface-2:#242A3C; --border:#2C3247;
+  --text:#F3F4FA; --text-dim:#8D92AC;
+  --brand:#FF6A3D; --easy:#37D67A; --medium:#FFB238; --hard:#FF5C72;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+h2,.display{font-family:'Space Grotesk',sans-serif;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+
+.reveal-shell{max-width:480px;margin:0 auto;padding:70px 40px;text-align:center;}
+.badge-wrap{width:100px;height:100px;margin:0 auto 22px;border-radius:50%;background:radial-gradient(circle,rgba(255,178,56,.22),transparent 70%);display:flex;align-items:center;justify-content:center;}
+.reveal-shell h2{font-size:26px;margin-bottom:8px;}
+.reveal-shell .sub{color:var(--text-dim);font-size:14.5px;margin-bottom:34px;}
+.reveal-stats{display:flex;gap:12px;margin-bottom:30px;}
+.reveal-stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 10px;}
+.reveal-stat b{display:block;font-family:'Space Grotesk',sans-serif;font-size:26px;}
+.reveal-stat span{font-size:11.5px;color:var(--text-dim);}
+.xp-gain-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:30px;text-align:left;}
+.xp-gain-top{display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);margin-bottom:10px;}
+.xp-gain-top b{color:var(--brand);}
+.xp-bar{height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden;}
+.xp-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),#FFB238);transition:width .6s ease;}
+.reveal-actions{display:flex;flex-direction:column;gap:10px;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:15px;transition:.18s;width:100%;}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 8px 24px -8px rgba(255,106,61,.55);}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn-danger{background:rgba(255,92,114,.14);color:var(--hard);border:1px solid rgba(255,92,114,.35);}
+.btn-danger:hover{background:rgba(255,92,114,.22);}
+</style>
+</head>
+<body>
+
+<div class="reveal-shell">
+  <div class="badge-wrap">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--medium)" stroke-width="1.6"><circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>
+  </div>
+  <h2>Kuis Selesai!</h2>
+  <div class="sub" id="reveal-sub">Kamu memahami cara bereaksi lebih baik dalam skenario ini.</div>
+  <div class="reveal-stats">
+    <div class="reveal-stat"><b id="reveal-correct" style="color:var(--easy)">0</b><span>Jawaban Benar</span></div>
+    <div class="reveal-stat"><b id="reveal-wrong" style="color:var(--hard)">0</b><span>Jawaban Salah / Terlewat</span></div>
+  </div>
+  <div class="xp-gain-card">
+    <div class="xp-gain-top"><span id="reveal-level-line">Level 1</span><b id="reveal-xp-gain">+0 XP</b></div>
+    <div class="xp-bar"><div class="xp-bar-fill" id="reveal-xp-bar" style="width:0%"></div></div>
+  </div>
+  <div class="reveal-actions">
+    <button class="btn btn-primary" onclick="goHome()">Kembali ke Beranda</button>
+    <button class="btn btn-danger" onclick="logout()">Keluar Aplikasi</button>
+  </div>
+</div>
+
+<script>
+function getAccounts(){ try{ return JSON.parse(localStorage.getItem('survivex_accounts')) || {}; }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem('survivex_accounts', JSON.stringify(a)); }
+function getSessionEmail(){ return localStorage.getItem('survivex_session') || ""; }
+function loadState(){
+  const email = getSessionEmail();
+  if(!email) return null;
+  const accounts = getAccounts();
+  return accounts[email] || null;
+}
+function saveState(s){
+  const email = getSessionEmail();
+  if(!email) return;
+  const accounts = getAccounts();
+  accounts[email] = s;
+  saveAccounts(accounts);
+}
+
+const DIFF_LABEL = { mudah:"Mudah", sedang:"Sedang", susah:"Susah" };
+
+let state = loadState();
+if(!state){ window.location.href = "signin.html"; }
+else if(!state.session){ window.location.href = "home.html"; }
+
+function computeAndRender(){
+  const s = state.session;
+  const total = s.total;
+  const correct = s.correct;
+  const wrong = total - correct;
+  const gained = correct * 20;
+
+  state.quizzesDone = (state.quizzesDone || 0) + 1;
+  if(correct > (state.bestCorrect || 0)) state.bestCorrect = correct;
+
+  const oldXp = state.xp;
+  const oldLevel = state.level;
+  let newXp = oldXp + gained;
+  let newLevel = oldLevel;
+  while(newXp >= 100){ newXp -= 100; newLevel++; }
+  const leveledUp = newLevel > oldLevel;
+
+  document.getElementById('reveal-correct').textContent = correct;
+  document.getElementById('reveal-wrong').textContent = wrong;
+  document.getElementById('reveal-xp-gain').textContent = "+"+gained+" XP";
+  document.getElementById('reveal-sub').textContent = correct===total
+    ? "Sempurna! Kamu siap menghadapi skenario tingkat "+DIFF_LABEL[s.difficulty].toLowerCase()+"."
+    : "Kamu memahami sebagian skenario — coba lagi untuk hasil lebih baik.";
+  document.getElementById('reveal-level-line').textContent = leveledUp
+    ? "Level "+oldLevel+" → Level "+newLevel
+    : "Level "+oldLevel;
+
+  const bar = document.getElementById('reveal-xp-bar');
+  bar.style.width = Math.min(100,oldXp)+"%";
+  setTimeout(()=>{ bar.style.width = (leveledUp?100:Math.min(100,newXp))+"%"; }, 350);
+
+  // simpan hasil akhir ke akun (level/xp naik), lalu bersihkan sesi kuis yang sudah selesai
+  state.xp = newXp;
+  state.level = newLevel;
+  state.selectedDifficulty = null;
+  state.session = null;
+  saveState(state);
+}
+
+function goHome(){ window.location.href = "home.html"; }
+function logout(){
+  /* Hanya melepas sesi login — data akun tetap tersimpan untuk login berikutnya. */
+  localStorage.removeItem('survivex_session');
+  window.location.href = "onboarding.html";
+}
+
+if(state && state.session) computeAndRender();
+</script>
+</body>
+</html>

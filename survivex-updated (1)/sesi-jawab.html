@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi Jawab — SurviveX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F17; --surface:#1B1F2E; --surface-2:#242A3C; --border:#2C3247;
+  --text:#F3F4FA; --text-dim:#8D92AC;
+  --brand:#FF6A3D;
+  --easy:#37D67A; --easy-bg:rgba(55,214,122,.13);
+  --medium:#FFB238; --medium-bg:rgba(255,178,56,.13);
+  --hard:#FF5C72; --hard-bg:rgba(255,92,114,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+.mono{font-family:'JetBrains Mono',monospace;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+
+.brandmark{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.5px;}
+.brandmark .shield{width:34px;height:34px;flex:0 0 auto;}
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);}
+.navbar button{font-weight:600;font-size:14px;color:var(--text-dim);}
+.navbar button:hover{color:var(--text);}
+.nav-right .who{text-align:right;}
+.nav-right .n{font-size:12px;color:var(--text-dim);}
+.nav-right .correct-wrap{display:flex;align-items:center;gap:6px;justify-content:flex-end;}
+.nav-right .flame{width:18px;height:18px;flex:0 0 auto;}
+.nav-right .l{font-size:14px;font-weight:700;color:var(--easy);}
+.nav-right .l.pop{animation:flame-pop .4s ease;}
+@keyframes flame-pop{0%{transform:scale(1);}40%{transform:scale(1.35);}100%{transform:scale(1);}}
+
+.quiz-shell{max-width:760px;margin:0 auto;padding:44px 40px 60px;}
+.quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.diff-pill{font-size:12px;font-weight:700;letter-spacing:.5px;padding:6px 14px;border-radius:999px;}
+.q-progress{color:var(--text-dim);font-size:13px;font-weight:600;}
+.cat-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.3px;color:var(--text-dim);background:var(--surface-2);border:1px solid var(--border);padding:4px 11px;border-radius:999px;margin-bottom:16px;}
+
+.timer-ring-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:30px;}
+.timer-ring{position:relative;width:130px;height:130px;}
+.timer-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.timer-ring circle{fill:none;stroke-width:9;}
+.timer-ring .track{stroke:var(--surface-2);}
+.timer-ring .prog{stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:34px;}
+.timer-label{margin-top:10px;color:var(--text-dim);font-size:12.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+
+#question{font-size:19px;line-height:1.5;margin-bottom:18px;font-weight:600;}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px 18px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;font-size:14.5px;font-weight:500;transition:.15s;}
+.opt:hover:not(:disabled){border-color:var(--brand);background:var(--surface-2);}
+.opt .letter{width:28px;height:28px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--text-dim);flex:0 0 auto;}
+.opt.correct{border-color:var(--easy);background:var(--easy-bg);}
+.opt.correct .letter{background:var(--easy);color:#06210F;}
+.opt.wrong{border-color:var(--hard);background:var(--hard-bg);}
+.opt.wrong .letter{background:var(--hard);color:#2A0810;}
+.opt:disabled{cursor:default;}
+
+.assist-row{display:flex;gap:10px;margin-top:8px;margin-bottom:6px;}
+.assist-btn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:10px 15px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);}
+.assist-btn:hover{color:var(--text);border-color:var(--brand);}
+.hint-box{background:var(--medium-bg);border:1px solid rgba(255,178,56,.35);color:var(--medium);border-radius:12px;padding:13px 16px;font-size:13.5px;margin-top:12px;display:none;}
+.hint-box.show{display:block;}
+
+@media (max-width:900px){ .navbar{padding:14px 18px;} .quiz-shell{padding:24px;} }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" fill="#FF6A3D"/><path d="M9 12l2 2 4-4" stroke="#0D0F17" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<nav class="navbar">
+  <div class="brandmark"><svg class="shield"><use href="#ico-shield"/></svg>SURVIVEX</div>
+  <a href="home.html"><button>Keluar dari sesi</button></a>
+  <div class="nav-right"><div class="who"><div class="n">Benar</div><div class="correct-wrap"><img class="flame" src="assets/flame-icon.png" alt=""><div class="l" id="correct-count">0</div></div></div></div>
+</nav>
+
+<div class="quiz-shell">
+  <div class="quiz-top">
+    <span class="diff-pill" id="diff-pill">Mudah</span>
+    <span class="q-progress" id="progress">Soal 1 / 5</span>
+  </div>
+  <span class="cat-tag" id="cat-tag">Kategori</span>
+  <div class="timer-ring-wrap">
+    <div class="timer-ring">
+      <svg viewBox="0 0 130 130">
+        <circle class="track" cx="65" cy="65" r="55"></circle>
+        <circle class="prog" id="ring" cx="65" cy="65" r="55" stroke="var(--hard)"></circle>
+      </svg>
+      <div class="timer-num mono" id="timer-num">15</div>
+    </div>
+    <div class="timer-label">Waktu Menjawab</div>
+  </div>
+  <h3 id="question">Memuat soal…</h3>
+  <div id="options"></div>
+  <div class="assist-row">
+    <button class="assist-btn" onclick="showHint()">💡 Hint</button>
+    <button class="assist-btn" onclick="playAudio()">🔊 Dengar Audio</button>
+  </div>
+  <div class="hint-box" id="hint-box"></div>
+</div>
+
+<script>
+const DIFF_META = {
+  mudah:  {label:"Mudah",  color:"var(--easy)",   bg:"var(--easy-bg)"},
+  sedang: {label:"Sedang", color:"var(--medium)", bg:"var(--medium-bg)"},
+  susah:  {label:"Susah",  color:"var(--hard)",   bg:"var(--hard-bg)"},
+};
+const RING_R = 55, RING_C = 2*Math.PI*RING_R;
+function setRing(el, fraction){
+  el.style.strokeDasharray = RING_C;
+  el.style.strokeDashoffset = RING_C * (1-fraction);
+}
+function getAccounts(){ try{ return JSON.parse(localStorage.getItem('survivex_accounts')) || {}; }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem('survivex_accounts', JSON.stringify(a)); }
+function getSessionEmail(){ return localStorage.getItem('survivex_session') || ""; }
+function loadState(){
+  const email = getSessionEmail();
+  if(!email) return null;
+  const accounts = getAccounts();
+  return accounts[email] || null;
+}
+function saveState(s){
+  const email = getSessionEmail();
+  if(!email) return;
+  const accounts = getAccounts();
+  accounts[email] = s;
+  saveAccounts(accounts);
+}
+
+let state = loadState();
+if(!state){ window.location.href = "signin.html"; }
+else if(!state.session || !state.session.questions){ window.location.href = "home.html"; }
+
+let timerHandle = null;
+let answered = false;
+
+function render(){
+  const s = state.session;
+  const meta = DIFF_META[s.difficulty];
+  const item = s.questions[s.idx]; // opsi & indeks jawaban benar sudah diacak saat kuis dimulai
+  answered = false;
+
+  const pill = document.getElementById('diff-pill');
+  pill.textContent = meta.label;
+  pill.style.color = meta.color;
+  pill.style.background = meta.bg;
+  document.getElementById('progress').textContent = "Soal "+(s.idx+1)+" / "+s.total;
+  document.getElementById('cat-tag').textContent = item.category;
+  document.getElementById('correct-count').textContent = s.correct;
+  document.getElementById('question').textContent = item.q;
+
+  const letters = ["A","B","C","D"];
+  const box = document.getElementById('options');
+  box.innerHTML = "";
+  item.opts.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="letter">'+letters[i]+'</span><span>'+opt+'</span>';
+    btn.onclick = ()=>submitAnswer(i);
+    box.appendChild(btn);
+  });
+  document.getElementById('hint-box').classList.remove('show');
+
+  let t = 15;
+  const num = document.getElementById('timer-num');
+  const ring = document.getElementById('ring');
+  num.textContent = t;
+  setRing(ring, 1);
+  timerHandle = setInterval(()=>{
+    t--;
+    num.textContent = Math.max(t,0);
+    setRing(ring, Math.max(t,0)/15);
+    if(t<=0){
+      clearInterval(timerHandle);
+      if(!answered) submitAnswer(-1);
+    }
+  },1000);
+}
+
+function submitAnswer(choiceIdx){
+  if(answered) return;
+  answered = true;
+  if(timerHandle) clearInterval(timerHandle);
+
+  const s = state.session;
+  const item = s.questions[s.idx];
+  const opts = document.querySelectorAll('#options .opt');
+  opts.forEach((btn,i)=>{
+    btn.disabled = true;
+    if(i===item.correct) btn.classList.add('correct');
+    else if(i===choiceIdx) btn.classList.add('wrong');
+  });
+  if(choiceIdx===item.correct){
+    s.correct++;
+    const countEl = document.getElementById('correct-count');
+    countEl.textContent = s.correct;
+    countEl.classList.remove('pop');
+    void countEl.offsetWidth; // restart animation
+    countEl.classList.add('pop');
+  } else {
+    document.getElementById('correct-count').textContent = s.correct;
+  }
+
+  setTimeout(()=>{
+    s.idx++;
+    saveState(state);
+    if(s.idx < s.total){
+      window.location.href = "sesi-berpikir.html";
+    } else {
+      window.location.href = "skor-reveal.html";
+    }
+  }, 1300);
+}
+
+function showHint(){
+  const s = state.session;
+  const item = s.questions[s.idx];
+  const box = document.getElementById('hint-box');
+  box.textContent = "💡 "+item.hint;
+  box.classList.add('show');
+}
+function playAudio(){
+  const s = state.session;
+  const item = s.questions[s.idx];
+  if('speechSynthesis' in window){
+    const u = new SpeechSynthesisUtterance(item.q);
+    u.lang = 'id-ID';
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+}
+
+if(state && state.session && state.session.questions) render();
+</script>
+</body>
+</html>

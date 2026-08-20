@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SurviveX — Belajar Siap Hadapi Gempa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F17; --surface:#1B1F2E; --border:#2C3247;
+  --text:#F3F4FA; --text-dim:#8D92AC;
+  --brand:#FF6A3D; --easy:#37D67A; --medium:#FFB238; --hard:#FF5C72;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+h1,h2,.display{font-family:'Space Grotesk',sans-serif;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+a{text-decoration:none;color:inherit;}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+
+.brandmark{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.5px;}
+.brandmark .shield{width:34px;height:34px;flex:0 0 auto;}
+
+.split{display:grid;grid-template-columns:1.1fr 1fr;min-height:100vh;}
+.brandpanel{
+  background:linear-gradient(160deg,#191122 0%,#0D0F17 60%);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;padding:70px;border-right:1px solid var(--border);
+}
+.brandpanel .glow{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,106,61,.22),transparent 65%);top:-160px;left:-160px;}
+.brandpanel .glow2{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(76,140,255,.18),transparent 65%);bottom:-140px;right:-100px;}
+.brandpanel-inner{position:relative;z-index:2;max-width:480px;}
+.brandpanel .eyebrow{color:var(--brand);font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;}
+.brandpanel h1{font-size:44px;line-height:1.12;margin-bottom:18px;}
+.brandpanel p{color:var(--text-dim);font-size:16px;line-height:1.6;margin-bottom:34px;}
+.tier-preview{display:flex;flex-direction:column;gap:10px;text-align:left;}
+.tier-mini{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:9px;border:1px solid var(--border);background:var(--surface);}
+.tier-mini .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+.tier-mini span{font-size:13.5px;color:var(--text-dim);}
+.tier-mini b{color:var(--text);font-weight:600;}
+
+.onboard-right{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;}
+.onboard-card{max-width:380px;text-align:center;}
+.onboard-card .shield-big{width:88px;height:88px;margin:0 auto 26px;}
+.onboard-card h2{font-size:26px;margin-bottom:10px;}
+.onboard-card p{color:var(--text-dim);font-size:14.5px;line-height:1.6;margin-bottom:32px;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:15px;transition:.18s;width:100%;}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 8px 24px -8px rgba(255,106,61,.55);}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{background:#242A3C;}
+
+.stat-strip{display:flex;gap:14px;margin-top:30px;}
+.stat-strip-item{flex:1;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 8px;}
+.stat-strip-item b{display:block;font-family:'Space Grotesk',sans-serif;font-size:20px;color:var(--brand);}
+.stat-strip-item span{font-size:11px;color:var(--text-dim);}
+
+.brandmark.small{font-size:15px;}
+.brandmark.small .shield{width:22px;height:22px;}
+.site-footer{border-top:1px solid var(--border);padding:34px 40px 40px;color:var(--text-dim);}
+.footer-inner{max-width:1140px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
+.footer-links a{font-size:13px;color:var(--text-dim);}
+.footer-links a:hover{color:var(--text);}
+.footer-bottom{width:100%;font-size:12px;padding-top:16px;border-top:1px solid var(--border);margin-top:6px;opacity:.75;}
+
+@media (max-width:900px){ .split{grid-template-columns:1fr;} .brandpanel{display:none;} .site-footer{padding:28px 18px 30px;} }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" fill="#FF6A3D"/><path d="M9 12l2 2 4-4" stroke="#0D0F17" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<div class="split">
+  <div class="brandpanel">
+    <div class="glow"></div><div class="glow2"></div>
+    <div class="brandpanel-inner">
+      <div class="brandmark"><svg class="shield"><use href="#ico-shield"/></svg>SURVIVEX</div>
+      <div class="eyebrow" style="margin-top:32px;">Siap sebelum terjadi</div>
+      <h1>Belajar siaga bencana lewat kuis singkat, bukan teori panjang.</h1>
+      <p>SurviveX melatih reaksi kamu menghadapi gempa bumi, banjir, kebakaran, tsunami, gunung meletus, angin puting beliung, dan tanah longsor lewat skenario nyata — lengkap dengan waktu berpikir dan waktu jawab seperti simulasi sungguhan. Soal dan opsi jawaban diacak setiap kamu bermain.</p>
+      <div class="tier-preview">
+        <div class="tier-mini"><span class="dot" style="background:var(--easy)"></span><span><b>Mudah</b> — dasar kesiapsiagaan, 5 soal acak</span></div>
+        <div class="tier-mini"><span class="dot" style="background:var(--medium)"></span><span><b>Sedang</b> — skenario situasi nyata, 5 soal acak</span></div>
+        <div class="tier-mini"><span class="dot" style="background:var(--hard)"></span><span><b>Susah</b> — teknis &amp; ilmu kebencanaan, 5 soal acak</span></div>
+      </div>
+      <div class="stat-strip">
+        <div class="stat-strip-item"><b>7</b><span>Jenis Bencana</span></div>
+        <div class="stat-strip-item"><b>3</b><span>Tingkat Kesulitan</span></div>
+        <div class="stat-strip-item"><b>30+</b><span>Soal Tersedia</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="onboard-right">
+    <div class="onboard-card">
+      <svg class="shield-big"><use href="#ico-shield"/></svg>
+      <h2>Selamat datang di SurviveX</h2>
+      <p>Satu akun, tiga tingkat kesulitan, tujuh jenis bencana, dan skor yang naik setiap kamu makin siap.</p>
+      <a href="signup.html"><button class="btn btn-primary">Mulai Sekarang</button></a>
+      <div style="height:10px"></div>
+      <a href="signin.html"><button class="btn btn-ghost">Saya sudah punya akun</button></a>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="brandmark small"><svg class="shield" width="22" height="22"><use href="#ico-shield"/></svg>SURVIVEX</div>
+    <div class="footer-links">
+      <a href="#">Tentang Kami</a>
+      <a href="#">Pusat Bantuan</a>
+      <a href="#">Kebijakan Privasi</a>
+      <a href="#">Kontak</a>
+    </div>
+    <div class="footer-bottom">© 2026 SurviveX. Platform edukasi kesiapsiagaan bencana — bukan pengganti arahan resmi BNPB/BMKG saat bencana nyata.</div>
+  </div>
+</footer>
+
+<script>
+// Kalau sudah login sebelumnya, tawarkan langsung ke Home lewat tombol di atas (tidak auto-redirect,
+// supaya user tetap bisa lihat halaman onboarding kapan saja).
+</script>
+</body>
+</html>

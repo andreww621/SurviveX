@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kelola profil akun SurviveX kamu — nama, email, dan kata sandi.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z' fill='%23FF6A3D'/%3E%3Cpath d='M9 12l2 2 4-4' stroke='%230D0F17' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>Edit Profil — SurviveX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F17; --surface:#1B1F2E; --border:#2C3247;
+  --text:#F3F4FA; --text-dim:#8D92AC;
+  --brand:#FF6A3D; --easy:#37D67A; --hard:#FF5C72; --hard-bg:rgba(255,92,114,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+h2,.display{font-family:'Space Grotesk',sans-serif;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+button:focus-visible,input:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+input{font-family:inherit;color:var(--text);}
+
+.brandmark{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.5px;}
+.brandmark .shield{width:34px;height:34px;flex:0 0 auto;}
+
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(13,15,23,.85);backdrop-filter:blur(10px);z-index:20;}
+.navlinks{display:flex;gap:6px;background:var(--surface);padding:5px;border-radius:999px;border:1px solid var(--border);}
+.navlinks button{padding:9px 20px;border-radius:999px;font-weight:600;font-size:14px;color:var(--text-dim);transition:.2s;}
+.navlinks button.active{background:var(--brand);color:#fff;}
+.navlinks button:not(.active):hover{color:var(--text);}
+.nav-user{display:flex;align-items:center;gap:12px;}
+.nav-user .who{text-align:right;}
+.nav-user .who .n{font-weight:600;font-size:14px;}
+.nav-user .who .l{font-size:12px;color:var(--text-dim);}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#FFB238);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:15px;flex:0 0 auto;}
+
+.profile-form-shell{max-width:520px;margin:0 auto;padding:50px 40px;}
+.avatar-edit{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#FFB238);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:30px;margin:0 auto 26px;}
+.profile-form-shell h2{text-align:center;font-size:24px;margin-bottom:8px;}
+.profile-form-shell .sub{text-align:center;color:var(--text-dim);font-size:13.5px;margin-bottom:30px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--text-dim);margin-bottom:7px;}
+.input-wrap{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;transition:.15s;}
+.input-wrap:focus-within{border-color:var(--brand);}
+.input-wrap input{background:none;border:none;outline:none;width:100%;font-size:14.5px;}
+.field-hint{font-size:11.5px;color:var(--text-dim);margin-top:6px;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:15px;transition:.18s;width:100%;}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 8px 24px -8px rgba(255,106,61,.55);}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn-danger{background:rgba(255,92,114,.14);color:var(--hard);border:1px solid rgba(255,92,114,.35);}
+.btn-danger:hover{background:rgba(255,92,114,.22);}
+.form-error{display:none;background:var(--hard-bg);border:1px solid rgba(255,92,114,.35);color:var(--hard);border-radius:12px;padding:12px 15px;font-size:13.5px;margin-bottom:16px;}
+.form-error.show{display:block;}
+
+.toast{position:fixed;bottom:26px;right:26px;background:var(--surface);border:1px solid var(--easy);color:var(--easy);padding:13px 20px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:0 20px 40px -20px rgba(0,0,0,.6);opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:100;}
+.toast.show{opacity:1;transform:none;}
+
+@media (max-width:900px){ .navbar{padding:14px 18px;} .profile-form-shell{padding:30px 20px;} }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" fill="#FF6A3D"/><path d="M9 12l2 2 4-4" stroke="#0D0F17" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<nav class="navbar">
+  <div class="brandmark"><svg class="shield"><use href="#ico-shield"/></svg>SURVIVEX</div>
+  <div class="navlinks">
+    <a href="home.html"><button>Beranda</button></a>
+    <button class="active">Profil</button>
+  </div>
+  <div class="nav-user">
+    <div class="who"><div class="n" id="nav-name">—</div><div class="l" id="nav-level">Level 1</div></div>
+    <div class="avatar" id="nav-avatar">?</div>
+  </div>
+</nav>
+
+<div class="profile-form-shell">
+  <div class="avatar-edit" id="edit-avatar">?</div>
+  <h2>Edit Profil</h2>
+  <div class="sub">Perubahan tersimpan pada akunmu — level dan XP tidak akan berubah.</div>
+  <div class="form-error" id="form-error"></div>
+  <form id="profile-form">
+    <div class="field">
+      <label>Nama Lengkap</label>
+      <div class="input-wrap"><input type="text" id="ep-name" required></div>
+    </div>
+    <div class="field">
+      <label>Alamat Email</label>
+      <div class="input-wrap"><input type="email" id="ep-email" required></div>
+      <div class="field-hint">Mengganti email akan memindahkan akunmu ke email baru — gunakan email baru ini saat login berikutnya.</div>
+    </div>
+    <div class="field">
+      <label>Kata Sandi</label>
+      <div class="input-wrap"><input type="password" id="ep-pass" placeholder="Kosongkan jika tidak diganti"></div>
+    </div>
+    <div style="height:10px"></div>
+    <button class="btn btn-primary" type="submit">Simpan Perubahan</button>
+    <div style="height:10px"></div>
+    <button class="btn btn-danger" type="button" onclick="logout()">Log out</button>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* Akun disimpan per-email; profil ini hanya membaca/menulis akun milik sesi yang sedang login. */
+function getAccounts(){ try{ return JSON.parse(localStorage.getItem('survivex_accounts')) || {}; }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem('survivex_accounts', JSON.stringify(a)); }
+function getSessionEmail(){ return localStorage.getItem('survivex_session') || ""; }
+function setSessionEmail(email){ localStorage.setItem('survivex_session', email); }
+function loadState(){
+  const email = getSessionEmail();
+  if(!email) return null;
+  const accounts = getAccounts();
+  return accounts[email] || null;
+}
+function saveState(s){
+  const email = getSessionEmail();
+  if(!email) return;
+  const accounts = getAccounts();
+  accounts[email] = s;
+  saveAccounts(accounts);
+}
+function initials(name){ if(!name) return "?"; return name.trim().split(/\s+/).slice(0,2).map(w=>w[0].toUpperCase()).join(""); }
+function showError(msg){
+  const box = document.getElementById('form-error');
+  box.textContent = msg;
+  box.classList.add('show');
+}
+
+let state = loadState();
+if(!state){ window.location.href = "signin.html"; }
+
+function render(){
+  const ini = initials(state.user.name);
+  document.getElementById('nav-avatar').textContent = ini;
+  document.getElementById('edit-avatar').textContent = ini;
+  document.getElementById('nav-name').textContent = state.user.name || "Tamu";
+  document.getElementById('nav-level').textContent = "Level "+state.level;
+  document.getElementById('ep-name').value = state.user.name || "";
+  document.getElementById('ep-email').value = state.user.email || "";
+  document.getElementById('ep-pass').value = "";
+}
+
+document.getElementById('profile-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  document.getElementById('form-error').classList.remove('show');
+
+  const newName = document.getElementById('ep-name').value.trim() || state.user.name;
+  const newEmail = document.getElementById('ep-email').value.trim().toLowerCase() || state.user.email;
+  const newPass = document.getElementById('ep-pass').value;
+  const oldEmail = getSessionEmail();
+
+  const accounts = getAccounts();
+  if(newEmail !== oldEmail && accounts[newEmail]){
+    showError("Email tersebut sudah digunakan oleh akun lain.");
+    return;
+  }
+
+  state.user.name = newName;
+  state.user.email = newEmail;
+  if(newPass) state.user.password = newPass;
+
+  if(newEmail !== oldEmail){
+    delete accounts[oldEmail];
+    accounts[newEmail] = state;
+    saveAccounts(accounts);
+    setSessionEmail(newEmail);
+  } else {
+    saveState(state);
+  }
+
+  render();
+  showToast("Profil berhasil diperbarui");
+});
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function logout(){
+  /* Hanya melepas sesi login — data akun (level, XP, riwayat) tetap tersimpan di 'survivex_accounts'. */
+  localStorage.removeItem('survivex_session');
+  window.location.href = "onboarding.html";
+}
+
+if(state) render();
+</script>
+</body>
+</html>

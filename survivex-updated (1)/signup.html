@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Daftar akun SurviveX gratis dan mulai latihan kesiapsiagaan bencana dari level 1.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z' fill='%23FF6A3D'/%3E%3Cpath d='M9 12l2 2 4-4' stroke='%230D0F17' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>Daftar — SurviveX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F17; --surface:#1B1F2E; --border:#2C3247;
+  --text:#F3F4FA; --text-dim:#8D92AC;
+  --brand:#FF6A3D; --easy:#37D67A; --easy-bg:rgba(55,214,122,.13);
+  --hard:#FF5C72; --hard-bg:rgba(255,92,114,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+h2,.display{font-family:'Space Grotesk',sans-serif;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+button:focus-visible,input:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+input{font-family:inherit;color:var(--text);}
+
+.brandmark{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.5px;}
+.brandmark .shield{width:34px;height:34px;flex:0 0 auto;}
+
+.auth-shell{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+.auth-visual{background:linear-gradient(165deg,#141826,#0D0F17 65%);position:relative;overflow:hidden;border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:60px;}
+.auth-visual .glow{position:absolute;width:480px;height:480px;background:radial-gradient(circle,rgba(76,140,255,.16),transparent 65%);border-radius:50%;top:-120px;right:-160px;}
+.auth-visual-card{position:relative;z-index:2;background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:36px;max-width:360px;box-shadow:0 30px 60px -30px rgba(0,0,0,.6);}
+.auth-visual-card .q-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--easy);background:var(--easy-bg);padding:4px 10px;border-radius:999px;margin-bottom:14px;}
+.auth-visual-card h3{font-size:18px;line-height:1.5;margin-bottom:18px;}
+.auth-visual-card .fake-opt{padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:13px;color:var(--text-dim);margin-bottom:8px;}
+.auth-visual-list{position:relative;z-index:2;margin-top:26px;max-width:360px;display:flex;flex-direction:column;gap:8px;}
+.auth-visual-list .row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim);}
+.auth-visual-list svg{flex:0 0 auto;color:var(--easy);}
+
+.auth-form-wrap{display:flex;align-items:center;justify-content:center;padding:60px;}
+.auth-form{width:100%;max-width:380px;}
+.auth-form .top-logo{margin-bottom:44px;}
+.auth-form h2{font-size:28px;margin-bottom:6px;}
+.auth-form .sub{color:var(--text-dim);font-size:14px;margin-bottom:30px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--text-dim);margin-bottom:7px;}
+.input-wrap{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;transition:.15s;}
+.input-wrap:focus-within{border-color:var(--brand);}
+.input-wrap svg{flex:0 0 auto;opacity:.6;}
+.input-wrap input{background:none;border:none;outline:none;width:100%;font-size:14.5px;}
+.switch-line{text-align:center;color:var(--text-dim);font-size:14px;margin-top:22px;}
+.switch-line button{color:var(--brand);font-weight:600;}
+.form-error{display:none;background:var(--hard-bg);border:1px solid rgba(255,92,114,.35);color:var(--hard);border-radius:12px;padding:12px 15px;font-size:13.5px;margin-bottom:16px;}
+.form-error.show{display:block;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:15px;transition:.18s;width:100%;}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 8px 24px -8px rgba(255,106,61,.55);}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
+
+@media (max-width:900px){ .auth-shell{grid-template-columns:1fr;} .auth-visual{display:none;} }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" fill="#FF6A3D"/><path d="M9 12l2 2 4-4" stroke="#0D0F17" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<div class="auth-shell">
+  <div class="auth-visual">
+    <div class="glow"></div>
+    <div>
+      <div class="auth-visual-card">
+        <span class="q-tag">MUDAH · CONTOH SOAL</span>
+        <h3>Barang apa yang penting disiapkan dalam tas siaga bencana?</h3>
+        <div class="fake-opt">Buku dan mainan</div>
+        <div class="fake-opt">Senter, air minum, dan obat-obatan</div>
+        <div class="fake-opt">Perhiasan</div>
+      </div>
+      <div class="auth-visual-list">
+        <div class="row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg> Gempa bumi, banjir, kebakaran, tsunami &amp; lainnya</div>
+        <div class="row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg> Soal dan opsi jawaban diacak tiap sesi</div>
+        <div class="row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg> Progres level &amp; XP tersimpan otomatis</div>
+      </div>
+    </div>
+  </div>
+  <div class="auth-form-wrap">
+    <form class="auth-form" id="signup-form">
+      <div class="top-logo brandmark"><svg class="shield"><use href="#ico-shield"/></svg>SURVIVEX</div>
+      <h2>Daftar</h2>
+      <div class="sub">Buat akun baru dan mulai dari level 1.</div>
+      <div class="form-error" id="form-error"></div>
+      <div class="field">
+        <label>Nama Lengkap</label>
+        <div class="input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <input type="text" id="su-name" placeholder="Nama kamu" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Alamat Email</label>
+        <div class="input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+          <input type="email" id="su-email" placeholder="nama@email.com" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Kata Sandi</label>
+        <div class="input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+          <input type="password" id="su-pass" placeholder="Buat kata sandi" minlength="4" required>
+        </div>
+      </div>
+      <div style="height:8px"></div>
+      <button class="btn btn-primary" type="submit">Daftar</button>
+      <div class="switch-line">Sudah memiliki akun? <a href="signin.html"><button type="button">Masuk</button></a></div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* Semua akun disimpan per-email di 'survivex_accounts', bukan satu blob tunggal.
+   Daftar hanya membuat akun baru jika email belum pernah dipakai, supaya akun lama
+   tidak pernah tertimpa/ter-reset saat orang lain (atau kamu sendiri) daftar lagi. */
+function getAccounts(){ try{ return JSON.parse(localStorage.getItem('survivex_accounts')) || {}; }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem('survivex_accounts', JSON.stringify(a)); }
+function showError(msg){
+  const box = document.getElementById('form-error');
+  box.textContent = msg;
+  box.classList.add('show');
+}
+
+document.getElementById('signup-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  document.getElementById('form-error').classList.remove('show');
+
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim().toLowerCase();
+  const pass = document.getElementById('su-pass').value;
+
+  const accounts = getAccounts();
+  if(accounts[email]){
+    showError("Email ini sudah terdaftar. Silakan masuk lewat halaman Masuk.");
+    return;
+  }
+
+  accounts[email] = {
+    user:{ name: name || "Pengguna Baru", email: email, password: pass },
+    level:1, xp:0, quizzesDone:0, bestCorrect:0,
+    selectedDifficulty:null, session:null
+  };
+  saveAccounts(accounts);
+  localStorage.setItem('survivex_session', email);
+  window.location.href = "home.html";
+});
+</script>
+</body>
+</html>

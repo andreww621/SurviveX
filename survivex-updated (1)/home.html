@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SurviveX — latihan kesiapsiagaan bencana lewat kuis interaktif: gempa bumi, banjir, kebakaran, tsunami, gunung meletus, angin puting beliung, dan tanah longsor.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z' fill='%23FF6A3D'/%3E%3Cpath d='M9 12l2 2 4-4' stroke='%230D0F17' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>Beranda — SurviveX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F17; --bg-soft:#12141F; --surface:#1B1F2E; --surface-2:#242A3C; --border:#2C3247;
+  --text:#F3F4FA; --text-dim:#8D92AC;
+  --brand:#FF6A3D;
+  --easy:#37D67A; --easy-bg:rgba(55,214,122,.13);
+  --medium:#FFB238; --medium-bg:rgba(255,178,56,.13);
+  --hard:#FF5C72; --hard-bg:rgba(255,92,114,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+h2,h3,h4,.display{font-family:'Space Grotesk',sans-serif;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+
+.brandmark{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.5px;}
+.brandmark .shield{width:34px;height:34px;flex:0 0 auto;}
+.brandmark.small{font-size:15px;}
+.brandmark.small .shield{width:22px;height:22px;}
+
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(13,15,23,.85);backdrop-filter:blur(10px);z-index:20;}
+.navlinks{display:flex;gap:6px;background:var(--surface);padding:5px;border-radius:999px;border:1px solid var(--border);}
+.navlinks button{padding:9px 20px;border-radius:999px;font-weight:600;font-size:14px;color:var(--text-dim);transition:.2s;}
+.navlinks button.active{background:var(--brand);color:#fff;}
+.navlinks button:not(.active):hover{color:var(--text);}
+.nav-user{display:flex;align-items:center;gap:12px;}
+.nav-user .who{text-align:right;}
+.nav-user .who .n{font-weight:600;font-size:14px;}
+.nav-user .who .l{font-size:12px;color:var(--text-dim);}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#FFB238);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:15px;flex:0 0 auto;}
+
+.page-shell{max-width:1140px;margin:0 auto;padding:40px;}
+.home-grid{display:grid;grid-template-columns:300px 1fr;gap:26px;align-items:start;}
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:26px;position:sticky;top:100px;}
+.avatar-lg{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#FFB238);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:22px;margin-bottom:14px;}
+.profile-card h3{font-size:18px;margin-bottom:2px;}
+.email-line{color:var(--text-dim);font-size:13px;margin-bottom:20px;word-break:break-all;}
+.xp-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.xp-row .lvl{font-size:13px;color:var(--text-dim);font-weight:600;}
+.xp-row .xp{font-size:13px;color:var(--text-dim);}
+.xp-bar{height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin-bottom:22px;}
+.xp-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),#FFB238);transition:width .6s ease;}
+.stat-mini-row{display:flex;gap:10px;margin-bottom:20px;}
+.stat-mini{flex:1;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
+.stat-mini b{display:block;font-family:'Space Grotesk',sans-serif;font-size:18px;}
+.stat-mini span{font-size:11px;color:var(--text-dim);}
+
+.main-col h2{font-size:22px;margin-bottom:4px;}
+.main-col .lead{color:var(--text-dim);font-size:14px;margin-bottom:22px;}
+.tier-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.tier-card{border-radius:22px;padding:22px;cursor:pointer;border:2px solid transparent;position:relative;transition:.18s;}
+.tier-card:hover{transform:translateY(-2px);}
+.tier-card.selected{border-color:currentColor;box-shadow:0 0 0 4px rgba(255,255,255,.03);}
+.tier-card .check{position:absolute;top:16px;right:16px;width:22px;height:22px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;opacity:.35;}
+.tier-card.selected .check{opacity:1;background:currentColor;}
+.tier-card .ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.tier-card h4{font-size:17px;margin-bottom:4px;}
+.tier-card p{font-size:12.5px;opacity:.75;margin-bottom:10px;}
+.tier-card .cats{display:flex;flex-wrap:wrap;gap:5px;}
+.tier-card .cats span{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.08);opacity:.85;}
+.tier-easy{background:var(--easy-bg);color:var(--easy);}
+.tier-easy .ico{background:rgba(55,214,122,.18);}
+.tier-medium{background:var(--medium-bg);color:var(--medium);}
+.tier-medium .ico{background:rgba(255,178,56,.18);}
+.tier-hard{background:var(--hard-bg);color:var(--hard);}
+.tier-hard .ico{background:rgba(255,92,114,.18);}
+.cta-row{display:flex;justify-content:flex-end;align-items:center;gap:14px;}
+.cta-row .shuffle-note{font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:6px;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border-radius:14px;font-weight:600;font-size:15px;transition:.18s;}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 8px 24px -8px rgba(255,106,61,.55);}
+.btn-primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border);width:100%;padding:10px 16px;font-size:13px;border-radius:10px;}
+.btn-ghost:hover{background:var(--surface-2);}
+
+.site-footer{border-top:1px solid var(--border);margin-top:50px;padding:34px 40px 40px;color:var(--text-dim);}
+.footer-inner{max-width:1140px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
+.footer-links a{font-size:13px;color:var(--text-dim);}
+.footer-links a:hover{color:var(--text);}
+.footer-bottom{width:100%;font-size:12px;padding-top:16px;border-top:1px solid var(--border);margin-top:6px;opacity:.75;}
+
+@media (max-width:900px){
+  .home-grid{grid-template-columns:1fr;}
+  .profile-card{position:static;}
+  .tier-cards{grid-template-columns:1fr;}
+  .navbar{padding:14px 18px;}
+  .page-shell{padding:24px;}
+  .site-footer{padding:28px 18px 30px;}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" fill="#FF6A3D"/><path d="M9 12l2 2 4-4" stroke="#0D0F17" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<nav class="navbar">
+  <div class="brandmark"><svg class="shield"><use href="#ico-shield"/></svg>SURVIVEX</div>
+  <div class="navlinks">
+    <button class="active">Beranda</button>
+    <a href="profile.html"><button>Profil</button></a>
+  </div>
+  <div class="nav-user">
+    <div class="who"><div class="n" id="nav-name">—</div><div class="l" id="nav-level">Level 1</div></div>
+    <div class="avatar" id="nav-avatar">?</div>
+  </div>
+</nav>
+
+<div class="page-shell">
+  <div class="home-grid">
+    <aside class="profile-card">
+      <div class="avatar-lg" id="home-avatar">?</div>
+      <h3 id="home-name">—</h3>
+      <div class="email-line" id="home-email">—</div>
+      <div class="xp-row"><span class="lvl" id="home-level-label">Level 1</span><span class="xp"><span id="home-xp-cur">0</span>/100 XP</span></div>
+      <div class="xp-bar"><div class="xp-bar-fill" id="home-xp-bar" style="width:0%"></div></div>
+      <div class="stat-mini-row">
+        <div class="stat-mini"><b id="home-quiz-count">0</b><span>Kuis Selesai</span></div>
+        <div class="stat-mini"><b id="home-best-streak">0</b><span>Skor Terbaik</span></div>
+      </div>
+      <a href="profile.html"><button class="btn-ghost">Edit Profil</button></a>
+    </aside>
+    <main class="main-col">
+      <h2>Pilih tingkat kesulitan</h2>
+      <p class="lead">Tiap tingkat mencakup berbagai jenis bencana — soal dan urutan opsi diacak setiap kali kamu bermain.</p>
+      <div class="tier-cards">
+        <div class="tier-card tier-easy" id="card-mudah" onclick="selectDifficulty('mudah')">
+          <div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
+          <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h4>Mudah</h4>
+          <p>5 soal acak · dasar kesiapsiagaan bencana</p>
+          <div class="cats" id="cats-mudah"></div>
+        </div>
+        <div class="tier-card tier-medium" id="card-sedang" onclick="selectDifficulty('sedang')">
+          <div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
+          <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21h16"/><path d="M8 21V9l4-5 4 5v12"/></svg></div>
+          <h4>Sedang</h4>
+          <p>5 soal acak · skenario situasi nyata</p>
+          <div class="cats" id="cats-sedang"></div>
+        </div>
+        <div class="tier-card tier-hard" id="card-susah" onclick="selectDifficulty('susah')">
+          <div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
+          <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l4-7 4 4 3-9 4 7 3 5"/></svg></div>
+          <h4>Susah</h4>
+          <p>5 soal acak · teknis &amp; ilmu kebencanaan</p>
+          <div class="cats" id="cats-susah"></div>
+        </div>
+      </div>
+      <div class="cta-row">
+        <span class="shuffle-note">🔀 Soal &amp; opsi jawaban diacak tiap sesi</span>
+        <button class="btn btn-primary" id="start-quiz-btn" disabled onclick="startQuiz()">Mulai Kuis →</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+
+<script>
+/* ====================== AKUN & SESI (per-email, disimpan lokal) ======================
+   survivex_accounts  -> { [email]: { user:{name,email,password}, level, xp, quizzesDone, bestCorrect, selectedDifficulty, session } }
+   survivex_session    -> email akun yang sedang login (string) atau kosong
+   Catatan: ini penyimpanan sisi klien untuk keperluan demo, bukan pengganti autentikasi server sungguhan. */
+function getAccounts(){ try{ return JSON.parse(localStorage.getItem('survivex_accounts')) || {}; }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem('survivex_accounts', JSON.stringify(a)); }
+function getSessionEmail(){ return localStorage.getItem('survivex_session') || ""; }
+function loadState(){
+  const email = getSessionEmail();
+  if(!email) return null;
+  const accounts = getAccounts();
+  return accounts[email] || null;
+}
+function saveState(s){
+  const email = getSessionEmail();
+  if(!email) return;
+  const accounts = getAccounts();
+  accounts[email] = s;
+  saveAccounts(accounts);
+}
+function initials(name){ if(!name) return "?"; return name.trim().split(/\s+/).slice(0,2).map(w=>w[0].toUpperCase()).join(""); }
+
+/* ====================== BANK SOAL — BERAGAM JENIS BENCANA ====================== */
+const QUESTION_BANK = {
+  mudah: [
+    { category:"Gempa Bumi", scenario:"Rumahmu mulai bergetar tiba-tiba saat kamu sedang duduk di ruang tamu.",
+      q:"Saat gempa terjadi dan kamu berada di dalam rumah, apa yang sebaiknya kamu lakukan pertama kali?",
+      opts:["Berlindung di bawah meja yang kokoh","Berlari keluar rumah secepatnya","Berdiri di dekat jendela","Naik ke lantai atas"], correct:0,
+      hint:"Pikirkan benda yang bisa melindungi kepala dan badanmu dari benda jatuh." },
+    { category:"Gempa Bumi", scenario:"Kamu diminta menyiapkan satu tas darurat sebelum bencana terjadi.",
+      q:"Barang apa yang penting disiapkan dalam tas siaga bencana?",
+      opts:["Senter, air minum, dan obat-obatan","Buku dan mainan","Perhiasan","Peralatan makan lengkap"], correct:0,
+      hint:"Pikirkan kebutuhan bertahan hidup selama beberapa hari tanpa listrik." },
+    { category:"Gempa Bumi", scenario:"Setelah gempa besar berhenti, warga diminta tetap waspada beberapa jam ke depan.",
+      q:'Apa yang dimaksud dengan "gempa susulan"?',
+      opts:["Gempa kecil yang terjadi setelah gempa utama","Gempa yang terjadi di laut","Gempa buatan manusia","Gempa yang hanya terasa di gedung tinggi"], correct:0,
+      hint:"Namanya sendiri sudah menjelaskan urutan waktunya." },
+    { category:"Gempa Bumi", scenario:"Getaran gempa terasa cukup kuat saat kamu berada di lantai dua sebuah gedung.",
+      q:"Kapan sebaiknya kamu keluar dari gedung saat gempa?",
+      opts:["Setelah getaran benar-benar berhenti","Saat getaran masih berlangsung","Sebelum gempa terjadi","Tidak perlu keluar"], correct:0,
+      hint:"Berlari saat lantai masih bergetar justru berisiko membuatmu terjatuh atau tertimpa." },
+    { category:"Gempa Bumi", scenario:"Seluruh penghuni gedung diarahkan menuju satu lokasi terbuka setelah evakuasi.",
+      q:"Apa fungsi utama dari titik kumpul (assembly point)?",
+      opts:["Tempat aman berkumpul setelah evakuasi","Tempat parkir kendaraan","Tempat menyimpan barang","Ruang rapat kantor"], correct:0,
+      hint:"Tempat ini biasanya ditandai dengan papan hijau di halaman terbuka." },
+    { category:"Banjir", scenario:"Hujan deras mengguyur seharian dan air sungai mulai meluap ke pemukiman.",
+      q:"Saat air mulai naik masuk ke rumah, apa yang sebaiknya kamu lakukan?",
+      opts:["Matikan listrik lalu pindah ke tempat yang lebih tinggi","Tetap menonton televisi seperti biasa","Menyalakan seluruh lampu rumah","Membiarkan air masuk tanpa tindakan"], correct:0,
+      hint:"Pikirkan bahaya sengatan listrik jika air bertemu instalasi listrik yang menyala." },
+    { category:"Kebakaran", scenario:"Kamu mencium bau asap tebal dari dapur saat sedang berada di kamar.",
+      q:"Saat mencium bau asap di dalam rumah, langkah pertama yang paling tepat adalah?",
+      opts:["Segera keluar rumah dan hubungi pemadam kebakaran","Mencari sumber api dulu sebelum keluar","Bersembunyi di kamar mandi","Mengambil barang berharga dulu"], correct:0,
+      hint:"Keselamatan diri harus didahulukan sebelum mencari tahu penyebabnya." },
+    { category:"Tsunami", scenario:"Kamu sedang bermain di pantai dan tiba-tiba air laut surut jauh melebihi biasanya.",
+      q:"Jika kamu berada di pantai dan air laut tiba-tiba surut drastis, apa artinya?",
+      opts:["Tanda bahaya tsunami, segera menjauh ke tempat tinggi","Tanda air pasang akan naik pelan-pelan","Fenomena biasa, aman untuk bermain","Tanda cuaca akan cerah"], correct:0,
+      hint:"Surutnya air secara drastis dan tiba-tiba adalah tanda peringatan alami." },
+    { category:"Gunung Meletus", scenario:"Gunung berapi di dekat desa mengeluarkan abu vulkanik yang mulai turun ke pemukiman.",
+      q:"Apa fungsi utama masker saat terjadi hujan abu vulkanik?",
+      opts:["Melindungi saluran pernapasan dari abu vulkanik","Melindungi mata dari sinar matahari","Menahan suara letusan","Menjaga suhu tubuh tetap hangat"], correct:0,
+      hint:"Abu vulkanik berbahaya jika terhirup dalam jumlah banyak." },
+    { category:"Angin Puting Beliung", scenario:"Langit tiba-tiba menghitam dan angin kencang mulai berputar di dekat rumahmu.",
+      q:"Saat mendengar peringatan angin puting beliung, tindakan paling aman adalah?",
+      opts:["Berlindung di ruangan kokoh yang jauh dari jendela","Berdiri di lapangan terbuka","Berlindung di bawah pohon besar","Tetap berkendara di jalan raya"], correct:0,
+      hint:"Hindari benda yang bisa roboh atau kaca yang bisa pecah tertiup angin." },
+    { category:"Tanah Longsor", scenario:"Kamu tinggal di lereng bukit dan hujan telah turun deras selama beberapa hari.",
+      q:"Tanda apa yang menunjukkan potensi tanah longsor di daerah perbukitan?",
+      opts:["Munculnya retakan tanah dan air keruh yang tiba-tiba muncul dari lereng","Udara terasa lebih dingin dari biasanya","Banyak burung berkicau di pagi hari","Tanah terasa lebih keras dari biasanya"], correct:0,
+      hint:"Perhatikan perubahan fisik pada tanah setelah hujan berkepanjangan." },
+  ],
+  sedang: [
+    { category:"Gempa Bumi", scenario:"Kamu berada di lantai 15 sebuah gedung perkantoran ketika gempa besar terjadi.",
+      q:"Saat gempa terjadi ketika kamu ada di dalam gedung bertingkat, apa yang harus segera dilakukan?",
+      opts:["Berlindung di bawah meja lalu evakuasi lewat tangga darurat setelah getaran berhenti","Menggunakan lift untuk turun secepatnya","Melompat dari jendela","Menunggu di lantai tempat kamu berada tanpa berlindung"], correct:0,
+      hint:"Ingat prinsip: lindungi diri dulu, baru evakuasi lewat jalur yang aman." },
+    { category:"Gempa Bumi", scenario:"Rekanmu ingin menekan tombol lift untuk segera turun saat alarm gempa berbunyi.",
+      q:"Mengapa penggunaan lift sangat dilarang saat gempa atau kebakaran?",
+      opts:["Lift bisa terhenti akibat listrik mati dan membuat orang terjebak","Lift terlalu lambat","Lift hanya untuk barang","Lift memerlukan kartu akses khusus"], correct:0,
+      hint:"Pikirkan apa yang terjadi pada listrik gedung saat bencana berlangsung." },
+    { category:"Gempa Bumi", scenario:"Instruktur simulasi bencana mengajarkan satu gerakan standar internasional.",
+      q:"Posisi tubuh yang benar untuk melindungi diri saat gempa disebut dengan istilah?",
+      opts:["Drop, Cover, Hold On","Stop and Go","Run and Hide","Duck and Roll"], correct:0,
+      hint:"Tiga kata dalam bahasa Inggris ini sering diajarkan dalam pelatihan tanggap darurat." },
+    { category:"Gempa Bumi", scenario:"Kamu sedang mengemudi di jalan raya ketika tanah mulai terasa berguncang.",
+      q:"Jika kamu sedang mengemudi saat gempa terjadi, tindakan paling tepat adalah?",
+      opts:["Menepikan mobil di tempat terbuka dan tetap di dalam mobil","Terus melaju secepatnya","Berhenti di bawah jembatan","Keluar dari mobil di tengah jalan"], correct:0,
+      hint:"Hindari struktur yang bisa runtuh, dan mobil justru cukup aman untuk berlindung sementara." },
+    { category:"Gempa Bumi", scenario:"Getaran gempa telah berhenti dan kamu baru saja masuk kembali ke rumah.",
+      q:"Apa yang harus diperiksa pertama kali setelah gempa besar berhenti?",
+      opts:["Kebocoran gas dan kabel listrik yang rusak","Jadwal televisi","Stok makanan ringan","Kondisi cat dinding"], correct:0,
+      hint:"Pikirkan bahaya yang bisa memicu kebakaran atau sengatan listrik setelah gempa." },
+    { category:"Banjir", scenario:"Mobil yang kamu kendarai mogok di tengah genangan banjir yang terus meninggi.",
+      q:"Kamu terjebak banjir di dalam mobil yang mogok, tindakan paling tepat adalah?",
+      opts:["Segera tinggalkan mobil dan cari tempat yang lebih tinggi","Tetap di dalam mobil menunggu air surut","Mendorong mobil sendirian","Menyalakan AC agar tetap nyaman"], correct:0,
+      hint:"Mobil yang terendam bisa terbawa arus, keselamatan diri lebih penting daripada kendaraan." },
+    { category:"Kebakaran", scenario:"Koridor gedung dipenuhi asap tebal saat alarm kebakaran berbunyi.",
+      q:"Saat evakuasi kebakaran di gedung berasap tebal, posisi tubuh yang tepat adalah?",
+      opts:["Merunduk rendah karena udara yang lebih bersih berada di bawah","Berjalan tegak agar cepat sampai","Berlari secepat mungkin tanpa merunduk","Menutup mata sambil berjalan"], correct:0,
+      hint:"Asap panas naik ke atas, udara yang lebih bisa dihirup ada di dekat lantai." },
+    { category:"Tsunami", scenario:"Gempa besar baru saja terjadi di dasar laut dekat kotamu yang berada di zona pesisir.",
+      q:"Berapa lama umumnya waktu yang kamu miliki untuk evakuasi setelah gempa besar di zona pesisir sebelum tsunami tiba?",
+      opts:["Bisa hanya beberapa menit, sehingga evakuasi harus segera dilakukan","Selalu lebih dari 6 jam","Tidak perlu evakuasi jika gempanya kecil","Tsunami selalu datang keesokan harinya"], correct:0,
+      hint:"Jangan menunggu peringatan resmi jika gempa besar dirasakan langsung di area pesisir." },
+    { category:"Gunung Meletus", scenario:"Status gunung berapi dinaikkan menjadi awas dan warga diminta segera mengungsi.",
+      q:"Jalur evakuasi saat gunung berapi meletus sebaiknya menghindari?",
+      opts:["Aliran sungai yang berhulu dari puncak gunung (jalur lahar)","Jalan raya utama","Daerah perkotaan","Bangunan sekolah"], correct:0,
+      hint:"Lahar dan aliran material vulkanik mengikuti alur sungai yang berasal dari puncak." },
+    { category:"Angin Puting Beliung", scenario:"Angin puting beliung melintas dekat rumahmu dan mulai merusak atap tetangga.",
+      q:"Mengapa kamu harus menjauh dari jendela kaca saat angin kencang atau puting beliung terjadi?",
+      opts:["Kaca bisa pecah akibat tekanan angin dan melukai orang di dekatnya","Jendela menghalangi pandangan ke luar","Kaca membuat ruangan terasa lebih dingin","Angin tidak berpengaruh pada kaca sama sekali"], correct:0,
+      hint:"Pecahan kaca akibat tekanan angin adalah salah satu penyebab cedera paling umum." },
+    { category:"Tanah Longsor", scenario:"Hujan telah turun deras selama tiga hari berturut-turut di desa yang berada di lereng bukit.",
+      q:"Setelah hujan deras berkepanjangan di area rawan longsor, apa yang sebaiknya dilakukan warga?",
+      opts:["Mengungsi sementara ke tempat lebih aman sesuai arahan petugas","Tetap tinggal untuk menjaga rumah","Menggali tanah di sekitar rumah","Menunggu longsor terjadi baru mengungsi"], correct:0,
+      hint:"Mengikuti arahan petugas kebencanaan lebih aman daripada menunggu tanda-tanda semakin jelas." },
+  ],
+  susah: [
+    { category:"Gempa Bumi", scenario:"Badan geologi merilis data magnitudo dari gempa yang baru saja terjadi.",
+      q:"Dalam skala Richter, gempa dengan magnitudo berapa yang mulai berpotensi menimbulkan kerusakan struktural signifikan pada bangunan?",
+      opts:["Sekitar 5.5 ke atas","Di bawah 2.0","Tepat 1.0","Hanya di atas 9.0"], correct:0,
+      hint:"Gempa di bawah magnitudo ini umumnya hanya terasa ringan tanpa kerusakan berarti." },
+    { category:"Gempa Bumi", scenario:"Seorang ahli geologi menjelaskan dua jenis gempa dengan penyebab yang berbeda.",
+      q:"Apa perbedaan utama antara gempa tektonik dan gempa vulkanik?",
+      opts:["Gempa tektonik disebabkan pergeseran lempeng bumi, gempa vulkanik disebabkan aktivitas magma","Keduanya selalu terjadi bersamaan","Gempa vulkanik hanya terjadi di laut","Tidak ada perbedaan signifikan"], correct:0,
+      hint:"Pikirkan dua sumber energi berbeda: pergerakan lempeng dan aktivitas gunung berapi." },
+    { category:"Gempa Bumi", scenario:"Sebuah gedung baru dirancang dengan teknologi antigempa canggih.",
+      q:'Mengapa bangunan dengan sistem "base isolation" lebih tahan terhadap gempa?',
+      opts:["Fondasi bangunan dipisahkan dari tanah untuk meredam getaran","Bangunan dibuat lebih ringan tanpa fondasi","Bangunan dipasang roda di bawahnya","Fondasi dibuat dari kayu"], correct:0,
+      hint:"Kata 'isolation' merujuk pada pemisahan struktur dari sumber getaran tanah." },
+    { category:"Tsunami", scenario:"Gempa berkekuatan besar baru saja terjadi di dasar laut dekat garis pantai.",
+      q:"Jika berada di area pesisir setelah gempa besar, ancaman lanjutan apa yang paling perlu diwaspadai?",
+      opts:["Tsunami","Angin topan","Hujan asam","Gerhana matahari"], correct:0,
+      hint:"Gempa bawah laut bisa memicu gelombang besar yang menghantam pantai." },
+    { category:"Gempa Bumi", scenario:"Peneliti membahas potensi gempa besar di sepanjang jalur pertemuan lempeng Indonesia.",
+      q:'Apa yang dimaksud dengan "zona megathrust" dalam konteks kegempaan Indonesia?',
+      opts:["Zona pertemuan lempeng tektonik yang berpotensi menghasilkan gempa besar","Zona bebas gempa","Wilayah pegunungan tertinggi","Zona hanya untuk gempa vulkanik"], correct:0,
+      hint:"Istilah ini sering muncul saat membahas potensi gempa besar di selatan Jawa dan Sumatra." },
+    { category:"Banjir", scenario:"Sungai di hulu desa meluap drastis hanya dalam hitungan menit setelah hujan lebat di pegunungan.",
+      q:'Apa yang dimaksud dengan "banjir bandang"?',
+      opts:["Banjir yang datang tiba-tiba dan cepat dengan volume air besar, biasanya dari daerah hulu","Banjir yang terjadi setiap tahun secara rutin","Banjir akibat air laut pasang","Banjir yang hanya terjadi di daerah datar"], correct:0,
+      hint:"Kecepatan dan volume air yang tiba-tiba besar adalah ciri utamanya." },
+    { category:"Kebakaran", scenario:"Seorang arsitek menjelaskan sistem proteksi kebakaran pada gedung bertingkat tinggi.",
+      q:'Apa fungsi "kompartemenisasi" dalam desain gedung tahan kebakaran?',
+      opts:["Membatasi penyebaran api dan asap antarzona bangunan","Mempercepat penyebaran api agar cepat padam","Menghemat biaya konstruksi","Menambah jumlah pintu darurat"], correct:0,
+      hint:"Konsepnya mirip sekat-sekat yang mengurung api pada satu area saja." },
+    { category:"Tsunami", scenario:"Peneliti kebencanaan menganalisis data ketinggian gelombang tsunami yang menghantam pesisir.",
+      q:'Apa yang dimaksud dengan "run-up height" dalam konteks tsunami?',
+      opts:["Ketinggian maksimum air tsunami saat mencapai daratan dari permukaan laut normal","Kecepatan gelombang tsunami di tengah laut","Jarak episentrum gempa ke garis pantai","Waktu yang dibutuhkan gempa untuk terjadi"], correct:0,
+      hint:"Istilah ini mengukur seberapa tinggi air 'naik' ke daratan, bukan kecepatannya." },
+    { category:"Gunung Meletus", scenario:"Gunung berapi meletus dan menghasilkan aliran material vulkanik yang meluncur cepat di lerengnya.",
+      q:'Apa yang dimaksud dengan "awan panas" atau aliran piroklastik pada letusan gunung berapi?',
+      opts:["Aliran material vulkanik panas berkecepatan tinggi yang sangat mematikan","Kabut dingin yang terbentuk dari uap air","Asap hitam biasa yang keluar dari kawah","Hujan abu ringan yang tidak berbahaya"], correct:0,
+      hint:"Fenomena ini adalah salah satu penyebab kematian terbesar dalam letusan gunung berapi eksplosif." },
+    { category:"Tanah Longsor", scenario:"Sebuah lereng yang dulunya berhutan lebat kini gundul akibat penebangan, dan hujan deras mengguyur wilayah tersebut.",
+      q:"Faktor apa yang paling meningkatkan risiko tanah longsor pada lereng dengan kemiringan curam?",
+      opts:["Hilangnya vegetasi penahan tanah akibat deforestasi ditambah curah hujan tinggi","Suhu udara yang sejuk","Banyaknya batu besar di puncak bukit","Warna tanah yang lebih gelap"], correct:0,
+      hint:"Akar tumbuhan berfungsi mengikat tanah; tanpa itu, air hujan mempercepat pergerakan tanah." },
+  ]
+};
+
+/* Fisher-Yates shuffle — tidak mengubah array asli */
+function shuffled(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* Pilih `count` soal acak dari bank, lalu acak urutan opsi jawaban tiap soal */
+function buildQuizQuestions(difficulty, count){
+  const pool = shuffled(QUESTION_BANK[difficulty]).slice(0, count);
+  return pool.map(item=>{
+    const order = shuffled([0,1,2,3]);
+    const opts = order.map(i=>item.opts[i]);
+    const correct = order.indexOf(item.correct);
+    return { category:item.category, scenario:item.scenario, q:item.q, opts, correct, hint:item.hint };
+  });
+}
+
+function renderCategoryChips(){
+  ['mudah','sedang','susah'].forEach(d=>{
+    const cats = [...new Set(QUESTION_BANK[d].map(it=>it.category))];
+    document.getElementById('cats-'+d).innerHTML = cats.map(c=>'<span>'+c+'</span>').join('');
+  });
+}
+
+let state = loadState();
+if(!state){ window.location.href = "signin.html"; }
+
+function render(){
+  const ini = initials(state.user.name);
+  document.getElementById('nav-avatar').textContent = ini;
+  document.getElementById('home-avatar').textContent = ini;
+  document.getElementById('nav-name').textContent = state.user.name || "Tamu";
+  document.getElementById('nav-level').textContent = "Level "+state.level;
+  document.getElementById('home-name').textContent = state.user.name || "Tamu";
+  document.getElementById('home-email').textContent = state.user.email || "—";
+  document.getElementById('home-level-label').textContent = "Level "+state.level;
+  document.getElementById('home-xp-cur').textContent = state.xp;
+  document.getElementById('home-xp-bar').style.width = Math.min(100,state.xp)+"%";
+  document.getElementById('home-quiz-count').textContent = state.quizzesDone || 0;
+  document.getElementById('home-best-streak').textContent = (state.bestCorrect || 0)+"/5";
+
+  ['mudah','sedang','susah'].forEach(d=>{
+    document.getElementById('card-'+d).classList.toggle('selected', state.selectedDifficulty===d);
+  });
+  document.getElementById('start-quiz-btn').disabled = !state.selectedDifficulty;
+}
+
+function selectDifficulty(d){
+  state.selectedDifficulty = d;
+  saveState(state);
+  render();
+}
+
+function startQuiz(){
+  if(!state.selectedDifficulty) return;
+  const questions = buildQuizQuestions(state.selectedDifficulty, 5);
+  state.session = { difficulty: state.selectedDifficulty, idx:0, correct:0, total: questions.length, questions: questions };
+  saveState(state);
+  window.location.href = "sesi-berpikir.html";
+}
+
+renderCategoryChips();
+if(state) render();
+</script>
+</body>
+</html>
